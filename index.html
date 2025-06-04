@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Editor Cute Image - Orsetti & Cuoricini 🐻💕</title>
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&family=Quicksand:wght@400;700&family=Pacifico&family=Indie+Flower&family=Fredoka+One&family=Caveat&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(45deg, #ffe8f4, #fff0f8, #ffeef6);
+      background-size: 400% 400%;
+      animation: gradientShift 8s ease-in-out infinite;
+      font-family: 'Quicksand', sans-serif;
+      text-align: center;
+      padding: 10px;
+      min-height: 100vh;
+      margin: 0;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    /* Decorazioni di sfondo animate */
+    body::before {
+      content: '🐻 💕 🧸 💖 🐻 💕 🧸 💖 🐻 💕 🧸 💖 🐻 💕 🧸 💖 🐻 💕 🧸 💖';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 200%;
+      height: 100%;
+      font-size: 2rem;
+      opacity: 0.1;
+      animation: floatIcons 20s linear infinite;
+      pointer-events: none;
+      z-index: -1;
+      line-height: 4rem;
+    }
+
+    @keyframes floatIcons {
+      0% { transform: translateX(-50%); }
+      100% { transform: translateX(0%); }
+    }
+
+    h1 {
+      color: #ff69b4;
+      font-family: 'Pacifico', cursive;
+      font-size: clamp(1.5rem, 4vw, 3rem);
+      margin: 20px 0;
+      text-shadow: 2px 2px 4px rgba(255, 105, 180, 0.3);
+      animation: bounce 2s ease-in-out infinite;
+    }
+
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-10px); }
+      60% { transform: translateY(-5px); }
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 15px;
+    }
+
+    .main-content {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .canvas-container {
+      flex: 1;
+      min-width: 300px;
+      max-width: 600px;
+    }
+
+    canvas {
+      border: 8px solid transparent;
+      background: linear-gradient(45deg, #ffb6c1, #ffc0cb, #ffb6c1);
+      border-radius: 20px;
+      box-shadow: 
+        0 10px 30px rgba(255, 105, 180, 0.4),
+        inset 0 0 20px rgba(255, 255, 255, 0.3);
+      width: 100%;
+      max-width: 512px;
+      height: auto;
+      aspect-ratio: 1;
+      transition: transform 0.3s ease;
+    }
+
+    canvas:hover {
+      transform: scale(1.02);
+    }
+
+    .controls {
+      flex: 1;
+      min-width: 300px;
+      max-width: 400px;
+      background: linear-gradient(135deg, #ffe4f2, #fff0f8);
+      border-radius: 25px;
+      padding: 25px;
+      box-shadow: 
+        0 15px 35px rgba(255, 105, 180, 0.3),
+        inset 0 2px 10px rgba(255, 255, 255, 0.5);
+      border: 3px solid rgba(255, 182, 193, 0.5);
+      position: relative;
+    }
+
+    .controls::before {
+      content: '🐻';
+      position: absolute;
+      top: -15px;
+      left: 20px;
+      font-size: 2rem;
+      background: #fff;
+      padding: 5px 10px;
+      border-radius: 50%;
+      box-shadow: 0 5px 15px rgba(255, 105, 180, 0.3);
+    }
+
+    .controls::after {
+      content: '💕';
+      position: absolute;
+      top: -15px;
+      right: 20px;
+      font-size: 2rem;
+      background: #fff;
+      padding: 5px 10px;
+      border-radius: 50%;
+      box-shadow: 0 5px 15px rgba(255, 105, 180, 0.3);
+    }
+
+    .control-group {
+      margin-bottom: 20px;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.7);
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(255, 105, 180, 0.1);
+    }
+
+    .controls input,
+    .controls select,
+    .controls button {
+      margin: 8px 4px;
+      padding: 12px 16px;
+      font-size: 14px;
+      border-radius: 15px;
+      border: 2px solid #ff69b4;
+      background: linear-gradient(135deg, #fff, #ffe8f4);
+      transition: all 0.3s ease;
+      font-family: 'Quicksand', sans-serif;
+      font-weight: 600;
+    }
+
+    .controls input:focus,
+    .controls select:focus {
+      outline: none;
+      box-shadow: 0 0 20px rgba(255, 105, 180, 0.5);
+      transform: scale(1.05);
+    }
+
+    .controls label {
+      font-weight: bold;
+      color: #d63384;
+      font-size: 16px;
+      display: inline-block;
+      margin: 10px 5px 5px 0;
+    }
+
+    button {
+      background: linear-gradient(135deg, #ff69b4, #ff8cc8);
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      border: 2px solid #ff69b4;
+    }
+
+    button:hover {
+      background: linear-gradient(135deg, #ff8cc8, #ffb3d9);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(255, 105, 180, 0.4);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    .movement-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      max-width: 200px;
+      margin: 15px auto;
+    }
+
+    .movement-grid button {
+      padding: 15px 10px;
+      font-size: 18px;
+      aspect-ratio: 1;
+    }
+
+    .reset-btn {
+      background: linear-gradient(135deg, #ff6b35, #ff8c69);
+      border-color: #ff6b35;
+      font-size: 16px;
+      padding: 15px 25px;
+    }
+
+    .download-btn {
+      background: linear-gradient(135deg, #28a745, #5cb85c);
+      border-color: #28a745;
+      font-size: 18px;
+      padding: 15px 30px;
+      margin-top: 20px;
+      color: #000000 !important;
+    }
+
+    #imageLoader {
+      background: linear-gradient(135deg, #6f42c1, #8a63d2);
+      color: white;
+      border-color: #6f42c1;
+    }
+
+    .footer {
+      margin-top: 40px;
+      font-size: 14px;
+      color: #666;
+      background: rgba(255, 255, 255, 0.8);
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(255, 105, 180, 0.1);
+    }
+
+    .footer::before {
+      content: '🧸 Fatto con amore 💖';
+      display: block;
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .main-content {
+        flex-direction: column;
+      }
+      
+      .canvas-container,
+      .controls {
+        min-width: 100%;
+        max-width: 100%;
+      }
+      
+      canvas {
+        max-width: 90vw;
+      }
+      
+      .controls {
+        padding: 20px 15px;
+      }
+      
+      .movement-grid {
+        max-width: 180px;
+      }
+      
+      .controls input,
+      .controls select,
+      .controls button {
+        font-size: 16px;
+        padding: 14px 18px;
+      }
+      
+      h1 {
+        font-size: 2rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 5px;
+      }
+      
+      .controls {
+        padding: 15px 10px;
+      }
+      
+      .movement-grid {
+        max-width: 150px;
+        gap: 5px;
+      }
+      
+      .movement-grid button {
+        padding: 12px 8px;
+        font-size: 16px;
+      }
+    }
+
+    /* Animazioni carine */
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    .controls input[type="color"] {
+      width: 60px;
+      height: 40px;
+      border-radius: 50%;
+      animation: heartbeat 2s ease-in-out infinite;
+    }
+
+    .controls input[type="file"] {
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.8; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🐻 Editor Cute Image 💕</h1>
+
+    <div class="main-content">
+      <div class="canvas-container">
+        <canvas id="imageCanvas" width="512" height="512"></canvas>
+      </div>
+
+      <div class="controls">
+        <div class="control-group">
+          <label for="imageLoader">🖼️ Carica immagine:</label><br>
+          <input type="file" id="imageLoader" accept="image/*" />
+        </div>
+
+        <div class="control-group">
+          <label for="textInput1">✏️ Testo:</label><br>
+          <input type="text" id="textInput1" placeholder="Scrivi qualcosa di carino..." />
+        </div>
+
+        <div class="control-group">
+          <label for="fontSelect">🔤 Font:</label>
+          <select id="fontSelect">
+            <option value="'Pacifico', cursive">Pacifico</option>
+            <option value="'Caveat', cursive">Caveat</option>
+            <option value="'Indie Flower', cursive">Indie Flower</option>
+            <option value="'Comfortaa', cursive">Comfortaa</option>
+            <option value="'Fredoka One', cursive">Fredoka One</option>
+            <option value="'Quicksand', sans-serif">Quicksand</option>
+          </select>
+
+          <br><br>
+
+          <label for="fontSize">📏 Dimensione:</label>
+          <input type="number" id="fontSize" value="30" min="10" max="100"/>
+
+          <label for="textColor">🌈 Colore:</label>
+          <input type="color" id="textColor" value="#ff69b4"/>
+
+          <br><br>
+
+          <label for="italicToggle">🌀 Obliquo:</label>
+          <input type="checkbox" id="italicToggle"/>
+        </div>
+
+        <div class="control-group">
+          <label>🎮 Muovi il testo:</label>
+          <div class="movement-grid">
+            <button onclick="moveText(-10, -10)">↖️</button>
+            <button onclick="moveText(0, -10)">⬆️</button>
+            <button onclick="moveText(10, -10)">↗️</button>
+            <button onclick="moveText(-10, 0)">⬅️</button>
+            <button onclick="resetImage()" class="reset-btn">🔄</button>
+            <button onclick="moveText(10, 0)">➡️</button>
+            <button onclick="moveText(-10, 10)">↙️</button>
+            <button onclick="moveText(0, 10)">⬇️</button>
+            <button onclick="moveText(10, 10)">↘️</button>
+          </div>
+        </div>
+
+        <button onclick="downloadImage()" class="download-btn">💾 Scarica Immagine</button>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p>Crea le tue immagini più carine con orsetti e cuoricini! 🐻💕</p>
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById("imageCanvas");
+    const ctx = canvas.getContext("2d");
+
+    let img = new Image();
+    let hasImage = false;
+    let texts = [
+      { content: "", x: 256, y: 256 }
+    ];
+    let currentTextIndex = 0;
+
+    // Funzione per adattare il canvas alla dimensione del contenitore
+    function resizeCanvas() {
+      const container = canvas.parentElement;
+      const containerWidth = container.clientWidth;
+      const size = Math.min(containerWidth * 0.9, 512);
+      
+      canvas.style.width = size + 'px';
+      canvas.style.height = size + 'px';
+    }
+
+    // Ridimensiona il canvas quando la finestra cambia dimensione
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    const imageLoader = document.getElementById('imageLoader');
+    imageLoader.addEventListener('change', handleImage, false);
+
+    function handleImage(e) {
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        img.onload = () => {
+          hasImage = true;
+          drawImage();
+        };
+        img.src = event.target.result;
+      };
+      reader.readAsDataURL(e.target.files[0]);
+    }
+
+    function drawImage() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      if (hasImage) {
+        // Disegna l'immagine ridimensionata
+        ctx.drawImage(img, 0, 0, 512, 512);
+      } else {
+        // Sfondo carino se non c'è immagine
+        const gradient = ctx.createLinearGradient(0, 0, 512, 512);
+        gradient.addColorStop(0, '#ffe8f4');
+        gradient.addColorStop(0.5, '#fff0f8');
+        gradient.addColorStop(1, '#ffeef6');
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, 512, 512);
+        
+        // Aggiungi alcuni orsetti e cuoricini decorativi
+        ctx.font = '40px Arial';
+        ctx.fillStyle = 'rgba(255, 105, 180, 0.3)';
+        ctx.textAlign = 'center';
+        
+        const decorations = ['🐻', '💕', '🧸', '💖'];
+        for (let i = 0; i < 8; i++) {
+          const x = (i % 4) * 128 + 64;
+          const y = Math.floor(i / 4) * 200 + 100;
+          const decoration = decorations[i % decorations.length];
+          ctx.fillText(decoration, x, y);
+        }
+      }
+
+      // Configurazione del testo
+      const font = document.getElementById("fontSelect").value;
+      const fontSize = document.getElementById("fontSize").value;
+      const color = document.getElementById("textColor").value;
+      const italic = document.getElementById("italicToggle").checked ? "italic" : "";
+
+      ctx.fillStyle = color;
+      ctx.textAlign = "center";
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 3;
+
+      texts.forEach((t, index) => {
+        if (t.content) {
+          ctx.font = `${italic} ${fontSize}px ${font}`;
+          // Contorno bianco per rendere il testo più leggibile
+          ctx.strokeText(t.content, t.x, t.y);
+          ctx.fillText(t.content, t.x, t.y);
+        }
+      });
+    }
+
+    function moveText(dx, dy) {
+      texts[currentTextIndex].x += dx;
+      texts[currentTextIndex].y += dy;
+      
+      // Mantieni il testo entro i bordi del canvas
+      texts[currentTextIndex].x = Math.max(20, Math.min(492, texts[currentTextIndex].x));
+      texts[currentTextIndex].y = Math.max(20, Math.min(492, texts[currentTextIndex].y));
+      
+      drawImage();
+    }
+
+    function resetImage() {
+      // Reset della posizione del testo
+      texts[currentTextIndex].x = 256;
+      texts[currentTextIndex].y = 256;
+      
+      // Se non c'è immagine caricata, mostra solo lo sfondo carino
+      if (!hasImage) {
+        drawImage();
+      } else {
+        // Se c'è un'immagine, ridisegnala
+        drawImage();
+      }
+    }
+
+    function downloadImage() {
+      const link = document.createElement('a');
+      link.download = 'immagine_cute_orsetti.png';
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+    }
+
+    // Event listeners
+    document.getElementById("textInput1").addEventListener("input", function() {
+      texts[0].content = this.value;
+      drawImage();
+    });
+
+    document.getElementById("fontSelect").addEventListener("change", drawImage);
+    document.getElementById("fontSize").addEventListener("change", drawImage);
+    document.getElementById("textColor").addEventListener("change", drawImage);
+    document.getElementById("italicToggle").addEventListener("change", drawImage);
+
+    // Inizializza con lo sfondo carino
+    drawImage();
+  </script>
+</body>
+</html>
